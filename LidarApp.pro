@@ -1,12 +1,11 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2019-08-06T14:06:14
+# Project created by QtCreator 2019-09-04T13:58:00
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT += core gui
 QT += network
-QT += core
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -27,16 +26,36 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        httprequestworker.cpp \
+        hometab.cpp \
+        lidarapp.cpp \
         main.cpp \
-        mainwindow.cpp
+        qortexclient.cpp \
+        zonetab.cpp \
+        header.cpp \
+        object.cpp \
+        objectpacket.cpp \
+        shape.cpp \
+        triplet.cpp \
+        vertice.cpp \
+        zone.cpp \
+        zonepacket.cpp
 
 HEADERS += \
-        httprequestworker.h \
-        mainwindow.h
+        hometab.h \
+        lidarapp.h \
+        qortexclient.h \
+        zonetab.h \
+        header.h \
+        object.h \
+        objectpacket.h \
+        shape.h \
+        triplet.h \
+        vertice.h \
+        zone.h \
+        zonepacket.h
 
-FORMS += \
-        mainwindow.ui
+#FORMS += \
+#        mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
