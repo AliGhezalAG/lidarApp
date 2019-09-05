@@ -74,6 +74,14 @@ void QortexClient::updateTabs(ZonePacket *zonePack, ObjectPacket *objectPack)
         Zone currentZone = zonePack->zones.at(i);
         ZoneTab *currentZoneTab = zoneTabMap[currentZone.name];
         currentZoneTab->updateZone(currentZone);
+        int index = tabWidget->indexOf(currentZoneTab);
+        if(currentZone.objectCount > 0){
+            tabWidget->tabBar()->setTabTextColor(index,Qt::red);
+//            tabWidget->tabBar()->setStyleSheet("QTabBar {background-color: red }");
+        } else {
+            tabWidget->tabBar()->setTabTextColor(index,Qt::black);
+//            tabWidget->tabBar()->setStyleSheet("QTabBar {background-color: white }");
+        }
     }
 }
 
