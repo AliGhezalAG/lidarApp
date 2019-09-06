@@ -22,3 +22,8 @@ ObjectPacket::ObjectPacket(QVariantMap &packet_map)
         this->objectList.append(myObject);
     }
 }
+
+QList<Object> ObjectPacket::getObjectList()
+{
+    return objectList;
+}

@@ -69,11 +69,11 @@ void QortexClient::initTabs(ZonePacket *zonePack)
 
 void QortexClient::updateTabs(ZonePacket *zonePack, ObjectPacket *objectPack)
 {
-    homeTab->updateHome(*zonePack);
+    homeTab->updateHome(*zonePack, *objectPack);
     for (int i = 0; i < zonePack->zones.size(); i++) {
         Zone currentZone = zonePack->zones.at(i);
         ZoneTab *currentZoneTab = zoneTabMap[currentZone.name];
-        currentZoneTab->updateZone(currentZone);
+        currentZoneTab->updateZone(currentZone, *objectPack);
         int index = tabWidget->indexOf(currentZoneTab);
         if(currentZone.objectCount > 0){
             tabWidget->tabBar()->setTabTextColor(index,Qt::red);

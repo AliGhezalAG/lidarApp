@@ -11,6 +11,7 @@ class ObjectPacket
 public:
     ObjectPacket();
     ObjectPacket(QVariantMap &packet_map);
+    QList<Object> getObjectList();
 
 private:
     Header          header;

@@ -9,8 +9,6 @@ class Triplet
 public:
     Triplet();
     Triplet(QVariantMap &triplet_map);
-
-private:
     double x;
     double y;
     double z;

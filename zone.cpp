@@ -45,6 +45,18 @@ Zone::Zone(QVariantMap &zone_map)
     this->shape = *new Shape(shape_map);
 }
 
+vector<Point> Zone::getPoints(double xmin, double ymin)
+{
+    vector<Point> pt;
+    for (int i=0; i<shape.vertices.size(); i++) {
+        int x = static_cast <int>((shape.vertices.at(i).x - xmin + 0.5)*50);
+        int y = static_cast <int>((shape.vertices.at(i).y - ymin +0.5)*50);
+        pt.push_back(Point (x,y));
+    }
+
+    return pt;
+}
+
 Zone::~Zone()
 {
 

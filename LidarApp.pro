@@ -61,3 +61,7 @@ HEADERS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+# OpenCV
+INCLUDEPATH += /usr/local/include/opencv4/opencv2
+LIBS += $(shell pkg-config opencv --libs)

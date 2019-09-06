@@ -11,8 +11,6 @@ class Object
 public:
     Object();
     Object(QVariantMap &object_map);
-
-private:
     int     id;
     int     timestamp;
     Triplet position;

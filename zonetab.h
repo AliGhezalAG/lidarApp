@@ -5,6 +5,14 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include "zonepacket.h"
+#include "objectpacket.h"
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/types_c.h>
+#include <opencv2/imgproc/imgproc.hpp>
+
+using namespace cv;
+using namespace std;
 
 class ZoneTab : public QWidget
 {
@@ -12,8 +20,8 @@ class ZoneTab : public QWidget
 
 public:
     ZoneTab(Zone &zone, QWidget *parent = nullptr);
-    void updateZone(Zone &currentZone)
-;
+    void updateZone(Zone &currentZone, ObjectPacket &objectPack);
+
 private:
     QString name;
     QLabel *countLabel;
@@ -21,6 +29,13 @@ private:
     QVBoxLayout *mainLayout;
     QLabel *nameLabel;
     QLabel *trackLabel;
+    QLabel *imgDisplayLabel;
+    Mat homeMap;
+    Mat initMap(Zone &zone);
+    double xmin;
+    double xmax;
+    double ymin;
+    double ymax;
 };
 
 #endif // ZONETAB_H

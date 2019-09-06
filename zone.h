@@ -4,6 +4,10 @@
 #include <QMetaType>
 #include <QString>
 #include "shape.h"
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+
+using namespace cv;
 
 class Zone
 {
@@ -22,6 +26,7 @@ public:
     double      zMin;
     double      zMax;
     QString     zoneClass;
+    vector<Point> getPoints(double xmin, double ymin);
 };
 
 Q_DECLARE_METATYPE(Zone)
