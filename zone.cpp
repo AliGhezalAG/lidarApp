@@ -43,21 +43,51 @@ Zone::Zone(QVariantMap &zone_map)
     QVariant currentShape = zone_map["shape"];
     QVariantMap shape_map = currentShape.value<QVariantMap>();
     this->shape = *new Shape(shape_map);
+    displayPoint = Point(0,0);
 }
 
-vector<Point> Zone::getPoints(double xmin, double ymin)
+vector<Point> Zone::getPoints()
 {
     vector<Point> pt;
     for (int i=0; i<shape.vertices.size(); i++) {
-        int x = static_cast <int>((shape.vertices.at(i).x - xmin + 0.5)*50);
-        int y = static_cast <int>((shape.vertices.at(i).y - ymin +0.5)*50);
+        int x = static_cast <int>((shape.vertices.at(i).x+16.5)*25);
+        int y = static_cast <int>((shape.vertices.at(i).y+11)*25);
         pt.push_back(Point (x,y));
     }
 
     return pt;
 }
 
-Zone::~Zone()
+Point Zone::getDisplayPoint()
 {
+    if(displayPoint.x == 0 && displayPoint.y == 0)
+        computeDisplayPoint();
 
+    return displayPoint;
 }
+
+void Zone::computeDisplayPoint(){
+    double xmin = this->shape.vertices.at(0).x;
+    double xmax = this->shape.vertices.at(0).x;
+    double ymin = this->shape.vertices.at(0).y;
+    double ymax = this->shape.vertices.at(0).y;
+
+    for(Vertice v : this->shape.vertices){
+        if(v.x > xmax)
+            xmax = v.x;
+        else if (v.x < xmin)
+            xmin = v.x;
+
+        if(v.y > ymax)
+            ymax = v.y;
+        else if (v.y < ymin)
+            ymin = v.y;
+    }
+
+    int x = static_cast <int>(ceil(xmin+16.5)*25);
+    int y = static_cast <int>(ceil((ymin)+11)*25) - 50;
+
+    displayPoint = Point(x,y);
+}
+
+Zone::~Zone(){}

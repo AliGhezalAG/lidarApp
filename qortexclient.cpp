@@ -40,12 +40,11 @@ void QortexClient::donneesRecues()
         ZonePacket *zonePack = new ZonePacket(root_map);
 
         root_map = getMapFromStream(objectStream);
-        ObjectPacket *objectPack = new ObjectPacket(root_map);
 
         if(!tabsInitiated)
             initTabs(zonePack);
 
-        updateTabs(zonePack, objectPack);
+        updateTabs(zonePack);
         //int count = zonePack.zones.at(0).objectCount;
         //  objectCount->setText(QString::number(count));
 
@@ -67,13 +66,13 @@ void QortexClient::initTabs(ZonePacket *zonePack)
     tabsInitiated = true;
 }
 
-void QortexClient::updateTabs(ZonePacket *zonePack, ObjectPacket *objectPack)
+void QortexClient::updateTabs(ZonePacket *zonePack)
 {
-    homeTab->updateHome(*zonePack, *objectPack);
+    homeTab->updateHome(*zonePack);
     for (int i = 0; i < zonePack->zones.size(); i++) {
         Zone currentZone = zonePack->zones.at(i);
         ZoneTab *currentZoneTab = zoneTabMap[currentZone.name];
-        currentZoneTab->updateZone(currentZone, *objectPack);
+        currentZoneTab->updateZone(currentZone);
         int index = tabWidget->indexOf(currentZoneTab);
         if(currentZone.objectCount > 0){
             tabWidget->tabBar()->setTabTextColor(index,Qt::red);

@@ -10,6 +10,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/types_c.h>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <QSizePolicy>
 
 using namespace cv;
 using namespace std;
@@ -20,7 +21,7 @@ class ZoneTab : public QWidget
 
 public:
     ZoneTab(Zone &zone, QWidget *parent = nullptr);
-    void updateZone(Zone &currentZone, ObjectPacket &objectPack);
+    void updateZone(Zone &currentZone);
 
 private:
     QString name;
@@ -30,6 +31,7 @@ private:
     QLabel *nameLabel;
     QLabel *trackLabel;
     QLabel *imgDisplayLabel;
+    QLabel  *zoneCountImgDisplayLabel;
     Mat homeMap;
     Mat initMap(Zone &zone);
     double xmin;

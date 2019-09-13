@@ -6,6 +6,10 @@
 #include "shape.h"
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <stdlib.h>
+
+#define X_MIN = -12.5
+#define Y_MIN = -12.25
 
 using namespace cv;
 
@@ -26,7 +30,10 @@ public:
     double      zMin;
     double      zMax;
     QString     zoneClass;
-    vector<Point> getPoints(double xmin, double ymin);
+    vector<Point> getPoints();
+    Point getDisplayPoint();
+    void computeDisplayPoint();
+    Point displayPoint;
 };
 
 Q_DECLARE_METATYPE(Zone)

@@ -3,18 +3,23 @@
 ZoneTab::ZoneTab(Zone &zone, QWidget *parent)
     : QWidget(parent), name(zone.name)
 {
-    QHBoxLayout *zoneNameLayout = new QHBoxLayout();
-    QLabel *zoneNameLabel = new QLabel(tr("Zone name:"));
-    nameLabel = new QLabel(tr(zone.name.toLocal8Bit().data()));
-    zoneNameLayout->addWidget(zoneNameLabel);
-    zoneNameLayout->addWidget(nameLabel);
+//    QHBoxLayout *zoneNameLayout = new QHBoxLayout();
+//    QLabel *zoneNameLabel = new QLabel(tr("Zone name:"));
+//    nameLabel = new QLabel(tr(zone.name.toLocal8Bit().data()));
+//    zoneNameLayout->addWidget(zoneNameLabel);
+//    zoneNameLayout->addWidget(nameLabel);
 
-    QHBoxLayout *zoneCountLayout = new QHBoxLayout();
-    QLabel *zoneCountLabel = new QLabel(tr("Zone count:"));
-    QString count = QString::number(zone.objectCount);
-    countLabel = new QLabel(tr(count.toLocal8Bit().data()));
-    zoneCountLayout->addWidget(zoneCountLabel);
-    zoneCountLayout->addWidget(countLabel);
+    Mat zoneCountImg = imread("/home/nano/Documents/lidarApp/images/personzoneCountImg.jpg");
+
+    Point countDisplayPoint = Point(25, 30);
+    QString countDisplay = "x" + QString::number(zone.objectCount);
+    putText(zoneCountImg, countDisplay.toStdString(), countDisplayPoint,FONT_HERSHEY_COMPLEX_SMALL, 1.2, cvScalar(0,0,0), 1, CV_AA);
+
+    cv::Mat personIconeTemp;
+    cvtColor(zoneCountImg, personIconeTemp, CV_BGR2RGB);
+    QImage personIconeImage = QImage(const_cast <uchar *> (personIconeTemp.data), personIconeTemp.cols, personIconeTemp.rows, static_cast <int>(personIconeTemp.step), QImage::Format_RGB888);
+    zoneCountImgDisplayLabel = new QLabel("");
+    zoneCountImgDisplayLabel->setPixmap(QPixmap::fromImage(personIconeImage));
 
     zoneListLayout = new QGridLayout;
     QLabel *zoneListLabel = new QLabel(tr("Track list:"));
@@ -27,7 +32,18 @@ ZoneTab::ZoneTab(Zone &zone, QWidget *parent)
     trackLabel = new QLabel(tr(label.toLocal8Bit().data()));
     zoneListLayout->addWidget(trackLabel, 0, 1, Qt::AlignTop);
 
-    homeMap = initMap(zone);
+    Mat lilImage;
+    //    homeMap = initMap(zone);
+    if (this->name.contains("Open space 1")) {
+        lilImage = imread("/home/nano/Documents/lidarApp/images/openSpace1.jpg");
+    } else if (this->name.contains("Open space 2")){
+        lilImage = imread("/home/nano/Documents/lidarApp/images/openSpace2.jpg");
+    } else {
+        lilImage = imread("/home/nano/Documents/lidarApp/images/openSpace3.jpg");
+    }
+
+    Size size(392,446);
+    cv::resize(lilImage,homeMap,size);
 
     cv::Mat temp;
     cvtColor(homeMap, temp, CV_BGR2RGB);
@@ -35,23 +51,43 @@ ZoneTab::ZoneTab(Zone &zone, QWidget *parent)
 
     imgDisplayLabel = new QLabel("");
     imgDisplayLabel->setPixmap(QPixmap::fromImage(myImage));
-    imgDisplayLabel->adjustSize();
+    //    imgDisplayLabel->adjustSize();
+    imgDisplayLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     mainLayout = new QVBoxLayout;
-    mainLayout->addLayout(zoneNameLayout);
-    mainLayout->addLayout(zoneCountLayout);
+    mainLayout->setSpacing(15);
+    mainLayout->addSpacing(100);
+//    mainLayout->addLayout(zoneNameLayout);
+    mainLayout->addWidget(zoneCountImgDisplayLabel);
     mainLayout->addLayout(zoneListLayout);
-    mainLayout->addWidget(imgDisplayLabel);
     mainLayout->addStretch(1);
-    setLayout(mainLayout);
+
+    QHBoxLayout *finalLayout = new QHBoxLayout();
+    finalLayout->addLayout(mainLayout);
+    finalLayout->addWidget(imgDisplayLabel);
+    setLayout(finalLayout);
 }
 
-void ZoneTab::updateZone(Zone &zone, ObjectPacket &objectPack)
+void ZoneTab::updateZone(Zone &zone)
 {
-    QString count = QString::number(zone.objectCount);
-    countLabel->setText(count);
-    countLabel->update();
-    countLabel->show();
+
+    Mat zoneCountImg = imread("/home/nano/Documents/lidarApp/images/personzoneCountImg.jpg");
+
+    Point countDisplayPoint = Point(25, 30);
+    QString countDisplay = "x" + QString::number(zone.objectCount);
+    putText(zoneCountImg, countDisplay.toStdString(), countDisplayPoint,FONT_HERSHEY_COMPLEX_SMALL, 1.2, cvScalar(0,0,0), 1, CV_AA);
+
+    cv::Mat personIconeTemp;
+    cvtColor(zoneCountImg, personIconeTemp, CV_BGR2RGB);
+    QImage personIconeImage = QImage(const_cast <uchar *> (personIconeTemp.data), personIconeTemp.cols, personIconeTemp.rows, static_cast <int>(personIconeTemp.step), QImage::Format_RGB888);
+    zoneCountImgDisplayLabel->setPixmap(QPixmap::fromImage(personIconeImage));
+    zoneCountImgDisplayLabel->update();
+    zoneCountImgDisplayLabel->show();
+
+    //    QString count = QString::number(zone.objectCount);
+    //    countLabel->setText(count);
+    //    countLabel->update();
+    //    countLabel->show();
 
     QString label = "";
     for (int i = 0; i < zone.objectIds.size(); i++) {
@@ -61,41 +97,15 @@ void ZoneTab::updateZone(Zone &zone, ObjectPacket &objectPack)
     trackLabel->update();
     trackLabel->show();
 
-    Mat newHomeMap = homeMap.clone();
-    for(Object obj : objectPack.getObjectList()){
-        if(zone.objectIds.contains(obj.id)){
-            Mat lilImageE = imread("/home/nano/Documents/lidarApp/yellowDot.jpg");
-            Size size(10,10);//the dst image size,e.g.100x100
-            Mat lilImage;//dst image
-            cv::resize(lilImageE,lilImage,size);
-            const int x = static_cast <int>((obj.position.x - xmin + 0.5)*50);
-            const int y = static_cast <int>((obj.position.y - ymin + 0.5)*50);
-            if(x>0 && x + lilImage.cols < newHomeMap.cols && y>0 && y + lilImage.rows < newHomeMap.rows)
-                lilImage.copyTo(newHomeMap(cv::Rect(x,y,lilImage.cols, lilImage.rows)));
-
-        }
-    }
-
-    cv::Mat temp;
-    cvtColor(newHomeMap, temp, CV_BGR2RGB);
-    QImage myImage = QImage(const_cast <uchar *> (temp.data), temp.cols, temp.rows, static_cast <int>(temp.step), QImage::Format_RGB888);
-    imgDisplayLabel->setPixmap(QPixmap::fromImage(myImage));
-    imgDisplayLabel->adjustSize();
-    imgDisplayLabel->update();
-    imgDisplayLabel->show();
-
     mainLayout->update();
-    setLayout(mainLayout);
 }
-
-
 
 Mat ZoneTab::initMap(Zone &zone)
 {
-    xmin = 0;
-    xmax = 0;
-    ymin = 0;
-    ymax = 0;
+    xmin = zone.shape.vertices.at(0).x;
+    xmax = zone.shape.vertices.at(0).x;
+    ymin = zone.shape.vertices.at(0).y;
+    ymax = zone.shape.vertices.at(0).y;
 
     for(Vertice v : zone.shape.vertices){
         if(v.x > xmax)
@@ -112,9 +122,9 @@ Mat ZoneTab::initMap(Zone &zone)
     int x = static_cast <int>(ceil(xmax-xmin+1)*50);
     int y = static_cast <int>(ceil(ymax-ymin+1)*50);
 
-    Mat homeMap(x, y, CV_8UC3, Scalar(0, 0, 0));
+    Mat homeMap(y, x, CV_8UC3, Scalar(211, 211, 211));
 
-    vector<Point> pt = zone.getPoints(xmin, ymin);
+    vector<Point> pt = zone.getPoints();
     polylines(homeMap,pt,true,Scalar(0,0,255),2,150,0);
 
     return homeMap;

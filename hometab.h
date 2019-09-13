@@ -22,7 +22,7 @@ class HomeTab : public QWidget
 
 public:
     HomeTab(ZonePacket &zonePack, QWidget *parent = nullptr);
-    void updateHome(ZonePacket &zonePacket, ObjectPacket &objectPack);
+    void updateHome(ZonePacket &zonePacket);
 
 private:
     int getTotalCount(ZonePacket &zonePack);

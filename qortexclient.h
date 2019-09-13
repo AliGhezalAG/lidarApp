@@ -36,7 +36,7 @@ private:
     HomeTab                     *homeTab;
     void processZones();
     void initTabs(ZonePacket *zonePack);
-    void updateTabs(ZonePacket *zonePack, ObjectPacket *objectPack);
+    void updateTabs(ZonePacket *zonePack);
     QVariantMap getMapFromStream(QByteArray &stream);
 
 signals:
