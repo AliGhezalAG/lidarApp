@@ -32,7 +32,15 @@ ZoneTab::ZoneTab(Zone &zone, QWidget *parent)
     trackLabel = new QLabel(tr(label.toLocal8Bit().data()));
     zoneListLayout->addWidget(trackLabel, 0, 1, Qt::AlignTop);
 
+    Mat rawLilImage;
+    rawLilImage = imread("/home/nano/Documents/lidarApp/images/openspace_stains.PNG");
+    Size lilSize(550,600);
     Mat lilImage;
+    cv::resize(rawLilImage,lilImage,lilSize);
+    vector<Point> pt = zone.getPoints();
+    polylines(lilImage,pt,true,Scalar(0,0,255),2,150,0);
+
+    /*
     //    homeMap = initMap(zone);
     if (this->name.contains("Open space 1")) {
         lilImage = imread("/home/nano/Documents/lidarApp/images/openSpace1.jpg");
@@ -41,6 +49,7 @@ ZoneTab::ZoneTab(Zone &zone, QWidget *parent)
     } else {
         lilImage = imread("/home/nano/Documents/lidarApp/images/openSpace3.jpg");
     }
+    */
 
     Size size(392,446);
     cv::resize(lilImage,homeMap,size);

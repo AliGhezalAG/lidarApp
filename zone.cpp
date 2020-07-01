@@ -50,8 +50,8 @@ vector<Point> Zone::getPoints()
 {
     vector<Point> pt;
     for (int i=0; i<shape.vertices.size(); i++) {
-        int x = static_cast <int>((shape.vertices.at(i).x+16.5)*25);
-        int y = static_cast <int>((shape.vertices.at(i).y+11)*25);
+        int x = static_cast <int>((shape.vertices.at(i).x+5)*32);
+        int y = static_cast <int>((shape.vertices.at(i).y+11)*32);
         pt.push_back(Point (x,y));
     }
 
@@ -84,8 +84,8 @@ void Zone::computeDisplayPoint(){
             ymin = v.y;
     }
 
-    int x = static_cast <int>(ceil(xmin+16.5)*25);
-    int y = static_cast <int>(ceil((ymin)+11)*25) - 50;
+    int x = static_cast <int>(ceil(xmin+4)*32);
+    int y = static_cast <int>(ceil((ymin)+11)*32)-50;
 
     displayPoint = Point(x,y);
 }

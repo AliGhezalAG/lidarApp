@@ -73,7 +73,7 @@ Mat HomeTab::initMap(ZonePacket &zonePack)
         }
     }
 
-    Mat originalHomeMap = imread("/home/nano/Documents/lidarApp/images/openSpace.jpg");
+    Mat originalHomeMap = imread("/home/nano/Documents/lidarApp/images/openspace_stains.PNG");
     //    Size size(625,925);
     Size size(550,600);
     Mat homeMap;//dst image
@@ -92,7 +92,7 @@ Mat HomeTab::initMap(ZonePacket &zonePack)
                 Scalar color = Scalar(0, 214, 243);
                 Size textSize = getTextSize(currentZone.name.toStdString(), FONT_HERSHEY_TRIPLEX, scale, thickness, &baseline);
                 baseline += thickness;
-                Mat texImg(textSize.height+15, textSize.width+10, CV_8UC3, color);
+                Mat texImg(textSize.height+5, textSize.width+11, CV_8UC3, color);
 
                 // center the text
                 Point textOrg((texImg.cols - textSize.width)/2, (texImg.rows + textSize.height)/2);
@@ -135,7 +135,7 @@ void HomeTab::updateHome(ZonePacket &zonePacket)
     //    countLabel->update();
     //    countLabel->show();
 
-    Mat originalHomeMap = imread("/home/nano/Documents/lidarApp/images/openSpace.jpg");
+    Mat originalHomeMap = imread("/home/nano/Documents/lidarApp/images/openspace_stains.PNG");
     Size size(550,600);
     Mat homeMap;
     cv::resize(originalHomeMap,homeMap,size);
@@ -144,7 +144,7 @@ void HomeTab::updateHome(ZonePacket &zonePacket)
 
     int baseline=0;
     int thickness = 1;
-    double scale = 0.8;
+    double scale = 0.5;
     Scalar color;
 
     for (Zone currentZone : zonePacket.zones) {
