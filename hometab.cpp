@@ -81,34 +81,39 @@ Mat HomeTab::initMap(ZonePacket &zonePack)
     Mat finalHomeMap = homeMap.clone();
 
     for (Zone currentZone : zonePack.zones) {
-        vector<Point> pt = currentZone.getPoints();
-        polylines(homeMap,pt,true,Scalar(0,120,0),2,150,0);
-        Point barycentre = currentZone.getDisplayPoint();
+        try {
+            if(currentZone.name.contains("Open space 1") || currentZone.name.contains("Open space 2") || currentZone.name.contains("Open space 3")){
+                vector<Point> pt = currentZone.getPoints();
+                polylines(homeMap,pt,true,Scalar(0,120,0),2,150,0);
+                Point barycentre = currentZone.getDisplayPoint();
+                int baseline=0;
+                int thickness = 1;
+                double scale = 0.5;
+                Scalar color = Scalar(0, 214, 243);
+                Size textSize = getTextSize(currentZone.name.toStdString(), FONT_HERSHEY_TRIPLEX, scale, thickness, &baseline);
+                baseline += thickness;
+                Mat texImg(textSize.height+15, textSize.width+10, CV_8UC3, color);
 
+                // center the text
+                Point textOrg((texImg.cols - textSize.width)/2, (texImg.rows + textSize.height)/2);
 
-        int baseline=0;
-        int thickness = 1;
-        double scale = 0.5;
-        Scalar color = Scalar(0, 214, 243);
-        Size textSize = getTextSize(currentZone.name.toStdString(), FONT_HERSHEY_TRIPLEX, scale, thickness, &baseline);
-        baseline += thickness;
-        Mat texImg(textSize.height+15, textSize.width+10, CV_8UC3, color);
+                // draw the box
+                rectangle(texImg, textOrg + Point(0, baseline), textOrg + Point(textSize.width, -textSize.height), color);
+                // ... and the baseline first
+                //        line(texImg, textOrg + Point(0, thickness),
+                //             textOrg + Point(textSize.width, thickness),
+                //             color);
 
-        // center the text
-        Point textOrg((texImg.cols - textSize.width)/2, (texImg.rows + textSize.height)/2);
+                // then put the text itself
+                putText(texImg, currentZone.name.toStdString(), textOrg, FONT_HERSHEY_TRIPLEX, scale, Scalar::all(255),thickness, 8);
 
-        // draw the box
-        rectangle(texImg, textOrg + Point(0, baseline), textOrg + Point(textSize.width, -textSize.height), color);
-        // ... and the baseline first
-        //        line(texImg, textOrg + Point(0, thickness),
-        //             textOrg + Point(textSize.width, thickness),
-        //             color);
+                texImg.copyTo(homeMap(cv::Rect(barycentre.x,barycentre.y,texImg.cols, texImg.rows)));
+                addWeighted(homeMap, 0.6, finalHomeMap, 0.4, 0, finalHomeMap);
+            }
+        } catch (Exception e) {
+            qInfo() << "Exception";
+        }
 
-        // then put the text itself
-        putText(texImg, currentZone.name.toStdString(), textOrg, FONT_HERSHEY_TRIPLEX, scale, Scalar::all(255),thickness, 8);
-
-        texImg.copyTo(homeMap(cv::Rect(barycentre.x,barycentre.y,texImg.cols, texImg.rows)));
-        addWeighted(homeMap, 0.6, finalHomeMap, 0.4, 0, finalHomeMap);
     }
 
     return finalHomeMap;
