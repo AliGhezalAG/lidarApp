@@ -3,13 +3,8 @@
 ZoneTab::ZoneTab(Zone &zone, QWidget *parent)
     : QWidget(parent), name(zone.name)
 {
-//    QHBoxLayout *zoneNameLayout = new QHBoxLayout();
-//    QLabel *zoneNameLabel = new QLabel(tr("Zone name:"));
-//    nameLabel = new QLabel(tr(zone.name.toLocal8Bit().data()));
-//    zoneNameLayout->addWidget(zoneNameLabel);
-//    zoneNameLayout->addWidget(nameLabel);
 
-    Mat zoneCountImg = imread("/home/nano/Documents/lidarApp/images/personzoneCountImg.jpg");
+    Mat zoneCountImg = imread(PERSON_ICONE_IMG);
 
     Point countDisplayPoint = Point(25, 30);
     QString countDisplay = "x" + QString::number(zone.objectCount);
@@ -33,25 +28,14 @@ ZoneTab::ZoneTab(Zone &zone, QWidget *parent)
     zoneListLayout->addWidget(trackLabel, 0, 1, Qt::AlignTop);
 
     Mat rawLilImage;
-    rawLilImage = imread("/home/nano/Documents/lidarApp/images/openspace_stains.PNG");
-    Size lilSize(550,600);
+    rawLilImage = imread(LOCATION_MAP_IMG);
+    Size lilSize(LOCATION_MAP_HOMETAB_SIZE_X,LOCATION_MAP_HOMETAB_SIZE_Y);
     Mat lilImage;
     cv::resize(rawLilImage,lilImage,lilSize);
     vector<Point> pt = zone.getPoints();
     polylines(lilImage,pt,true,Scalar(0,0,255),2,150,0);
 
-    /*
-    //    homeMap = initMap(zone);
-    if (this->name.contains("Open space 1")) {
-        lilImage = imread("/home/nano/Documents/lidarApp/images/openSpace1.jpg");
-    } else if (this->name.contains("Open space 2")){
-        lilImage = imread("/home/nano/Documents/lidarApp/images/openSpace2.jpg");
-    } else {
-        lilImage = imread("/home/nano/Documents/lidarApp/images/openSpace3.jpg");
-    }
-    */
-
-    Size size(392,446);
+    Size size(LOCATION_MAP_ZONETAB_SIZE_X,LOCATION_MAP_ZONETAB_SIZE_Y);
     cv::resize(lilImage,homeMap,size);
 
     cv::Mat temp;
@@ -60,13 +44,11 @@ ZoneTab::ZoneTab(Zone &zone, QWidget *parent)
 
     imgDisplayLabel = new QLabel("");
     imgDisplayLabel->setPixmap(QPixmap::fromImage(myImage));
-    //    imgDisplayLabel->adjustSize();
     imgDisplayLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     mainLayout = new QVBoxLayout;
     mainLayout->setSpacing(15);
     mainLayout->addSpacing(100);
-//    mainLayout->addLayout(zoneNameLayout);
     mainLayout->addWidget(zoneCountImgDisplayLabel);
     mainLayout->addLayout(zoneListLayout);
     mainLayout->addStretch(1);
@@ -80,7 +62,7 @@ ZoneTab::ZoneTab(Zone &zone, QWidget *parent)
 void ZoneTab::updateZone(Zone &zone)
 {
 
-    Mat zoneCountImg = imread("/home/nano/Documents/lidarApp/images/personzoneCountImg.jpg");
+    Mat zoneCountImg = imread(PERSON_ICONE_IMG);
 
     Point countDisplayPoint = Point(25, 30);
     QString countDisplay = "x" + QString::number(zone.objectCount);
@@ -92,11 +74,6 @@ void ZoneTab::updateZone(Zone &zone)
     zoneCountImgDisplayLabel->setPixmap(QPixmap::fromImage(personIconeImage));
     zoneCountImgDisplayLabel->update();
     zoneCountImgDisplayLabel->show();
-
-    //    QString count = QString::number(zone.objectCount);
-    //    countLabel->setText(count);
-    //    countLabel->update();
-    //    countLabel->show();
 
     QString label = "";
     for (int i = 0; i < zone.objectIds.size(); i++) {

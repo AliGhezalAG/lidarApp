@@ -3,30 +3,6 @@
 HomeTab::HomeTab(ZonePacket &zonePack, QWidget *parent)
     : QWidget(parent)
 {
-    //    QHBoxLayout *areaNameLayout = new QHBoxLayout();
-    //    QLabel *areaNameLabel = new QLabel(tr("Area Name:"));
-    //    QLabel *nameLabel = new QLabel(tr("Test area"));
-    //    areaNameLayout->addWidget(areaNameLabel);
-    //    areaNameLayout->addWidget(nameLabel);
-
-    //    QHBoxLayout *areaCountLayout = new QHBoxLayout();
-    //    QLabel *areaCountLabel = new QLabel(tr("Area count:"));
-    //    QString totalCount = QString::number(getTotalCount(zonePack));
-    //    countLabel = new QLabel(tr(totalCount.toLocal8Bit().data()));
-    //    areaCountLayout->addWidget(areaCountLabel);
-    //    areaCountLayout->addWidget(countLabel);
-
-    //    QGridLayout *zoneListLayout = new QGridLayout;
-    //    QLabel *zoneListLabel = new QLabel(tr("Zone list:"));
-    //    zoneListLayout->addWidget(zoneListLabel, 0, 0, Qt::AlignTop);
-
-    //    QString label = "";
-    //    for (int i = 0; i < zonePack.zones.size(); i++) {
-    //        label += zonePack.zones.at(i).name + "\n";
-    //    }
-    //    zoneLabel = new QLabel(tr(label.toLocal8Bit().data()));
-    //    zoneListLayout->addWidget(zoneLabel, 0, 1, Qt::AlignTop);
-
     homeMap = initMap(zonePack);
 
     cv::Mat temp;
@@ -37,16 +13,7 @@ HomeTab::HomeTab(ZonePacket &zonePack, QWidget *parent)
     imgDisplayLabel->setPixmap(QPixmap::fromImage(myImage));
     imgDisplayLabel->adjustSize();
 
-    //    QVBoxLayout *mainLayout = new QVBoxLayout;
-    //    mainLayout->setSpacing(5);
-    //    mainLayout->addLayout(areaNameLayout);
-    //    mainLayout->addLayout(areaCountLayout);
-    //    mainLayout->addLayout(zoneListLayout);
-    //    mainLayout->addStretch(1);
-
     QHBoxLayout *finalLayout = new QHBoxLayout();
-    //    finalLayout->addLayout(mainLayout);
-    //    finalLayout->addSpacing(15);
     finalLayout->addWidget(imgDisplayLabel);
     setLayout(finalLayout);
 }
@@ -73,43 +40,36 @@ Mat HomeTab::initMap(ZonePacket &zonePack)
         }
     }
 
-    Mat originalHomeMap = imread("/home/nano/Documents/lidarApp/images/openspace_stains.PNG");
-    //    Size size(625,925);
-    Size size(550,600);
+    Mat originalHomeMap = imread(LOCATION_MAP_IMG);
+    Size size(LOCATION_MAP_HOMETAB_SIZE_X,LOCATION_MAP_HOMETAB_SIZE_Y);
     Mat homeMap;//dst image
     cv::resize(originalHomeMap,homeMap,size);
     Mat finalHomeMap = homeMap.clone();
 
     for (Zone currentZone : zonePack.zones) {
         try {
-            if(currentZone.name.contains("Open space 1") || currentZone.name.contains("Open space 2") || currentZone.name.contains("Open space 3")){
-                vector<Point> pt = currentZone.getPoints();
-                polylines(homeMap,pt,true,Scalar(0,120,0),2,150,0);
-                Point barycentre = currentZone.getDisplayPoint();
-                int baseline=0;
-                int thickness = 1;
-                double scale = 0.5;
-                Scalar color = Scalar(0, 214, 243);
-                Size textSize = getTextSize(currentZone.name.toStdString(), FONT_HERSHEY_TRIPLEX, scale, thickness, &baseline);
-                baseline += thickness;
-                Mat texImg(textSize.height+5, textSize.width+11, CV_8UC3, color);
+            vector<Point> pt = currentZone.getPoints();
+            polylines(homeMap,pt,true,Scalar(0,120,0),2,150,0);
+            Point barycentre = currentZone.getDisplayPoint();
+            int baseline = 0;
+            int thickness = 1;
+            double scale = 0.5;
+            Scalar color = Scalar(0, 214, 243);
+            Size textSize = getTextSize(currentZone.name.toStdString(), FONT_HERSHEY_TRIPLEX, scale, thickness, &baseline);
+            baseline += thickness;
+            Mat texImg(textSize.height+5, textSize.width+11, CV_8UC3, color);
 
-                // center the text
-                Point textOrg((texImg.cols - textSize.width)/2, (texImg.rows + textSize.height)/2);
+            // center the text
+            Point textOrg((texImg.cols - textSize.width)/2, (texImg.rows + textSize.height)/2);
 
-                // draw the box
-                rectangle(texImg, textOrg + Point(0, baseline), textOrg + Point(textSize.width, -textSize.height), color);
-                // ... and the baseline first
-                //        line(texImg, textOrg + Point(0, thickness),
-                //             textOrg + Point(textSize.width, thickness),
-                //             color);
+            // draw the box
+            rectangle(texImg, textOrg + Point(0, baseline), textOrg + Point(textSize.width, -textSize.height), color);
 
-                // then put the text itself
-                putText(texImg, currentZone.name.toStdString(), textOrg, FONT_HERSHEY_TRIPLEX, scale, Scalar::all(255),thickness, 8);
+            // then put the text itself
+            putText(texImg, currentZone.name.toStdString(), textOrg, FONT_HERSHEY_TRIPLEX, scale, Scalar::all(255),thickness, 8);
 
-                texImg.copyTo(homeMap(cv::Rect(barycentre.x,barycentre.y,texImg.cols, texImg.rows)));
-                addWeighted(homeMap, 0.6, finalHomeMap, 0.4, 0, finalHomeMap);
-            }
+            texImg.copyTo(homeMap(cv::Rect(barycentre.x,barycentre.y,texImg.cols, texImg.rows)));
+            addWeighted(homeMap, 0.6, finalHomeMap, 0.4, 0, finalHomeMap);
         } catch (Exception e) {
             qInfo() << "Exception";
         }
@@ -130,19 +90,14 @@ int HomeTab::getTotalCount(ZonePacket &zonePack)
 
 void HomeTab::updateHome(ZonePacket &zonePacket)
 {
-    //    QString totalCount = QString::number(getTotalCount(zonePacket));
-    //    countLabel->setText(totalCount);
-    //    countLabel->update();
-    //    countLabel->show();
-
-    Mat originalHomeMap = imread("/home/nano/Documents/lidarApp/images/openspace_stains.PNG");
-    Size size(550,600);
+    Mat originalHomeMap = imread(LOCATION_MAP_IMG);
+    Size size(LOCATION_MAP_HOMETAB_SIZE_X,LOCATION_MAP_HOMETAB_SIZE_Y);
     Mat homeMap;
     cv::resize(originalHomeMap,homeMap,size);
     Mat newHomeMap = homeMap.clone();
     Mat finalHomeMap = homeMap.clone();
 
-    int baseline=0;
+    int baseline = 0;
     int thickness = 1;
     double scale = 0.5;
     Scalar color;
@@ -168,11 +123,6 @@ void HomeTab::updateHome(ZonePacket &zonePacket)
 
         // draw the box
         rectangle(texImg, textOrg + Point(0, baseline), textOrg + Point(textSize.width, -textSize.height), color);
-
-        // ... and the baseline first
-        //        line(texImg, textOrg + Point(0, thickness),
-        //             textOrg + Point(textSize.width, thickness),
-        //             color);
 
         // then put the text itself
         putText(texImg, currentZone.name.toStdString(), textOrg, FONT_HERSHEY_COMPLEX_SMALL, scale, Scalar::all(255),thickness, 8);

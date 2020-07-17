@@ -12,6 +12,7 @@
 #include <math.h>
 #include "triplet.h"
 #include "objectpacket.h"
+#include "config.h"
 
 using namespace cv;
 using namespace std;

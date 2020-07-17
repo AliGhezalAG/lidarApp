@@ -7,6 +7,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <stdlib.h>
+#include "config.h"
 
 #define X_MIN = -12.5
 #define Y_MIN = -12.25

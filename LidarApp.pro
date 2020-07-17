@@ -41,6 +41,7 @@ SOURCES += \
         zonepacket.cpp
 
 HEADERS += \
+        config.h \
         hometab.h \
         lidarapp.h \
         qortexclient.h \

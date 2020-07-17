@@ -50,8 +50,8 @@ vector<Point> Zone::getPoints()
 {
     vector<Point> pt;
     for (int i=0; i<shape.vertices.size(); i++) {
-        int x = static_cast <int>((shape.vertices.at(i).x+5)*32);
-        int y = static_cast <int>((shape.vertices.at(i).y+11)*32);
+        int x = static_cast <int>((shape.vertices.at(i).x+LIDAR_POS_X)*LOCATION_TO_MAP_SCALE);
+        int y = static_cast <int>((shape.vertices.at(i).y+LIDAR_POS_Y)*LOCATION_TO_MAP_SCALE);
         pt.push_back(Point (x,y));
     }
 
@@ -84,8 +84,8 @@ void Zone::computeDisplayPoint(){
             ymin = v.y;
     }
 
-    int x = static_cast <int>(ceil(xmin+4)*32);
-    int y = static_cast <int>(ceil((ymin)+11)*32)-50;
+    int x = static_cast <int>(ceil(xmin+LIDAR_POS_X)*LOCATION_TO_MAP_SCALE);
+    int y = static_cast <int>(ceil((ymin)+LIDAR_POS_Y)*LOCATION_TO_MAP_SCALE)-50;
 
     displayPoint = Point(x,y);
 }

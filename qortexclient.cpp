@@ -45,10 +45,6 @@ void QortexClient::donneesRecues()
             initTabs(zonePack);
 
         updateTabs(zonePack);
-        //int count = zonePack.zones.at(0).objectCount;
-        //  objectCount->setText(QString::number(count));
-
-        //    listeMessages->append(QTextCodec::codecForMib(106)->toUnicode(packet));
     }
 }
 
@@ -76,10 +72,8 @@ void QortexClient::updateTabs(ZonePacket *zonePack)
         int index = tabWidget->indexOf(currentZoneTab);
         if(currentZone.objectCount > 0){
             tabWidget->tabBar()->setTabTextColor(index,Qt::red);
-//            tabWidget->tabBar()->setStyleSheet("QTabBar {background-color: red }");
         } else {
             tabWidget->tabBar()->setTabTextColor(index,Qt::black);
-//            tabWidget->tabBar()->setStyleSheet("QTabBar {background-color: white }");
         }
     }
 }
